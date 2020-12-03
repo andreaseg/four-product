@@ -1,0 +1,9 @@
+[package]
+name = "four-product"
+version = "0.1.0"
+authors = ["Andreas Grønlien"]
+edition = "2018"
+
+[dependencies]
+ndarray = "0.14"
+err-derive = "0.3.0"
