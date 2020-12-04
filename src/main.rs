@@ -44,32 +44,20 @@ fn max_four_product(matrix: &Matrix<i32>) -> i32 {
 
 /// Finds the horizontal max four-product of the given matrix
 fn horizontal_max(matrix: &Matrix<i32>) -> i32 {
-    (0..matrix.nrows())
-        .map(|i| {
-            matrix
-                .row(i)
-                .windows(4)
-                .into_iter()
-                .map(|w| w[0] * w[1] * w[2] * w[3])
-                .max()
-                .unwrap_or(0)
-        })
+    matrix
+        .windows((1, 4))
+        .into_iter()
+        .map(|w| w[[0, 0]] * w[[0, 1]] * w[[0, 2]] * w[[0, 3]])
         .max()
         .unwrap_or(0)
 }
 
 /// Finds the vertical max four-product of the given matrix
 fn vertial_max(matrix: &Matrix<i32>) -> i32 {
-    (0..matrix.ncols())
-        .map(|i| {
-            matrix
-                .column(i)
-                .windows(4)
-                .into_iter()
-                .map(|w| w[0] * w[1] * w[2] * w[3])
-                .max()
-                .unwrap_or(0)
-        })
+    matrix
+        .windows((4, 1))
+        .into_iter()
+        .map(|w| w[[0, 0]] * w[[1, 0]] * w[[2, 0]] * w[[3, 0]])
         .max()
         .unwrap_or(0)
 }

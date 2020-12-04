@@ -6,7 +6,10 @@ trait Join {
 
 impl<I: Iterator<Item = String>> Join for I {
     fn join(mut self, joiner: &str) -> String {
-        let first = self.next().unwrap_or_else(|| return "".to_string());
+        let first = match self.next() {
+            Some(s) => s,
+            None => return "".to_string(),
+        };
         self.fold(first, |l, r| l + joiner + &r)
     }
 }
