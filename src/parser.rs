@@ -8,14 +8,14 @@ pub enum MatrixParseError {
     #[error(display = "could not parse number due to error {}", _0)]
     InvalidNumber(ParseIntError),
     #[error(
-        display = "matrix is malformed, expected rows and cols are {} x {}, but actual size was {}",
-        rows,
-        cols,
+        display = "matrix is malformed, expected width and height are {} x {}, but actual size was {}",
+        width,
+        height,
         actual_size
     )]
     MalformedMatrix {
-        rows: usize,
-        cols: usize,
+        height: usize,
+        width: usize,
         actual_size: usize,
     },
 }
@@ -28,10 +28,10 @@ pub enum MatrixParseError {
 pub fn parse_matrix(matrix_string: &str) -> Result<Array2<i32>, MatrixParseError> {
     let mut matrix_buffer: Vec<i32> = Vec::new();
 
-    let mut rows: usize = 0;
+    let mut height: usize = 0;
 
     for row in matrix_string.split('\n') {
-        rows += 1;
+        height += 1;
 
         for col in row.split_whitespace() {
             let n: i32 = col.parse().map_err(MatrixParseError::InvalidNumber)?;
@@ -40,14 +40,14 @@ pub fn parse_matrix(matrix_string: &str) -> Result<Array2<i32>, MatrixParseError
     }
 
     let buffer_length = matrix_buffer.len();
-    let cols = buffer_length / rows;
+    let width = buffer_length / height;
 
-    let shape = (rows, cols);
+    let shape = (height, width);
 
     let matrix = Array::from_shape_vec(shape, matrix_buffer).map_err(|_| {
         MatrixParseError::MalformedMatrix {
-            rows,
-            cols,
+            width,
+            height,
             actual_size: buffer_length,
         }
     })?;
@@ -69,6 +69,10 @@ mod tests {
 
         let expected = arr2(&[[0, 1, 2], [3, 4, 5], [6, 7, 8]]);
 
+        assert_eq!(0, expected[[0, 0]]);
+        assert_eq!(1, expected[[0, 1]]);
+        assert_eq!(3, expected[[1, 0]]);
+
         assert_eq!(parse_matrix(string).unwrap(), expected);
     }
 
@@ -81,6 +85,9 @@ mod tests {
 
         let expected = arr2(&[[0, 1, 2], [3, 4, 5], [6, 7, 8], [9, 10, 11]]);
 
+        assert_eq!(3, expected.ncols());
+        assert_eq!(4, expected.nrows());
+
         assert_eq!(parse_matrix(string).unwrap(), expected);
     }
 
@@ -91,6 +98,9 @@ mod tests {
                        8 9 10 11";
 
         let expected = arr2(&[[0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11]]);
+
+        assert_eq!(4, expected.ncols());
+        assert_eq!(3, expected.nrows());
 
         assert_eq!(parse_matrix(string).unwrap(), expected);
     }

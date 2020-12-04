@@ -16,9 +16,9 @@ impl<I: Iterator<Item = String>> Join for I {
 
 pub fn pretty_print(matrix: &Array2<i32>) {
     let message: String = (0..matrix.nrows())
-        .map(|x| {
+        .map(|row| {
             (0..matrix.ncols())
-                .map(|y| format!("{:02}", matrix[[x, y]]))
+                .map(|col| format!("{:02}", matrix[[row, col]]))
                 .join(" ")
         })
         .join("\n");
